@@ -1,0 +1,2 @@
+FROM kentsday/dfx_rust:bullseye-dfx-0.10.0-1
+COPY config.toml /usr/local/cargo/

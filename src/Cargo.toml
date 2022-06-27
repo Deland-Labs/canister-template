@@ -1,0 +1,12 @@
+[workspace]
+members = [
+#    "common/common",
+#    "common/test_common",
+    "common/build_common",
+    "common/common_actor",
+]
+
+[profile.release]
+lto = true
+opt-level = 'z'
+panic = 'abort'

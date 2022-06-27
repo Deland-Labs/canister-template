@@ -1,0 +1,68 @@
+type BatchTransferRequest = record { items : vec TransferQuotaDetails };
+type BooleanActorResponse = variant { Ok : bool; Err : ErrorInfo_1 };
+type ErrorInfo = record { code : nat32; message : text };
+type ErrorInfo_1 = record { code : nat32; message : text };
+type GetNamesResponse = record { names : vec record { text; text } };
+type NamingError = variant {
+  RemoteError : ErrorInfo;
+  TopNameAlreadyExists;
+  InvalidCanisterName;
+  InvalidResolverKey : record { key : text };
+  RegistrationHasBeenTaken;
+  RegistrationNotFound;
+  OperatorCountExceeded;
+  ResolverNotFoundError : record { name : text };
+  InsufficientQuota;
+  RenewalYearsError : record { years : nat32 };
+  TooManyFavorites : record { max : nat64 };
+  OrderNotFound;
+  InvalidApproveAmount;
+  YearsRangeError : record { max : nat32; min : nat32 };
+  PermissionDenied;
+  InvalidResolverValueFormat : record { value : text; format : text };
+  RegistryNotFoundError : record { name : text };
+  ValueShouldBeInRangeError : record { max : nat64; min : nat64; field : text };
+  Unauthorized;
+  InvalidName : record { reason : text };
+  InvalidQuotaOrderDetails;
+  InvalidOwner;
+  NameUnavailable : record { reason : text };
+  Unknown;
+  OperatorShouldNotBeTheSameToOwner;
+  PendingOrder;
+  ValueMaxLengthError : record { max : nat64 };
+  OwnerOnly;
+  CanisterCallError : record { message : text; rejection_code : text };
+  RefundFailed;
+  Conflict;
+};
+type QuotaType = variant { LenEq : nat8; LenGte : nat8 };
+type QuotaType_1 = variant { LenEq : nat8; LenGte : nat8 };
+type Result = variant { Ok : BooleanActorResponse; Err : NamingError };
+type Result_1 = variant { Ok : GetNamesResponse; Err : NamingError };
+type Result_2 = variant { Ok : nat32; Err : NamingError };
+type Result_3 = variant { Ok : BooleanActorResponse; Err : ErrorInfo_1 };
+type TransferFromQuotaRequest = record {
+  to : principal;
+  diff : nat32;
+  from : principal;
+  quota_type : QuotaType_1;
+};
+type TransferQuotaDetails = record {
+  to : principal;
+  diff : nat32;
+  quota_type : QuotaType;
+};
+service : () -> {
+  add_quota : (principal, QuotaType, nat32) -> (Result);
+  approve : (text, principal) -> (BooleanActorResponse);
+  batch_transfer_quota : (BatchTransferRequest) -> (BooleanActorResponse);
+  get_names : () -> (Result_1) query;
+  get_quota : (QuotaType) -> (Result_2) query;
+  remove_approval : (text, principal) -> (Result_3) query;
+  set_registry_owner : (text, principal) -> (Result_3);
+  transfer : (text, principal) -> (BooleanActorResponse);
+  transfer_from : (text) -> (BooleanActorResponse);
+  transfer_from_quota : (TransferFromQuotaRequest) -> (BooleanActorResponse);
+  transfer_quota : (principal, QuotaType_1, nat32) -> (BooleanActorResponse);
+}
