@@ -1,7 +1,7 @@
 [workspace]
 members = [
-#    "common/common",
-#    "common/test_common",
+    "common/common",
+    "common/test_common",
     "common/build_common",
     "common/common_actor",
 ]
