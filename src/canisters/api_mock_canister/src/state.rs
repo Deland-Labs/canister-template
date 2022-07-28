@@ -1,10 +1,9 @@
 use crate::errors::{NamingError, ServiceResult};
-use crate::naming::{normalize_name, FirstLevelName, NameParseResult};
-use crate::user_quota_store::{AuthPrincipal, UserQuotaStore};
+use crate::mock_utils::{normalize_name, FirstLevelName, NameParseResult};
 use candid::Principal;
-use common::error::ICNSError;
 use common::ic_logger::ICLogger;
 use common::named_canister_ids::{ensure_current_canister_id_match, CanisterNames};
+use common::AuthPrincipal;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::sync::Once;
@@ -16,9 +15,9 @@ static INIT: Once = Once::new();
 
 pub(crate) fn canister_module_init() {
     INIT.call_once(|| {
-        ICLogger::init("registrar");
+        ICLogger::init("MockSampleCanister");
     });
-    ensure_current_canister_id_match(CanisterNames::Registrar);
+    ensure_current_canister_id_match(CanisterNames::MockSampleCanister);
 }
 
 #[derive(Default)]
@@ -27,7 +26,6 @@ pub struct State {
     // are being persisted in the `replace` method below.
     pub(crate) registries: RefCell<HashMap<String, Principal>>,
     pub(crate) approvals: RefCell<HashMap<String, Principal>>,
-    pub(crate) user_quota_store: RefCell<UserQuotaStore>,
 }
 
 pub fn is_name_owner(name: &FirstLevelName, caller: &Principal) -> ServiceResult<Principal> {
@@ -94,7 +92,7 @@ pub fn must_not_anonymous(caller: &Principal) -> ServiceResult<AuthPrincipal> {
 }
 
 pub fn set_approval(name: &FirstLevelName, approved_to: &Principal) {
-    STATE.with(|mut s| {
+    STATE.with(|s| {
         let mut approvals = s.approvals.borrow_mut();
         if approved_to == &Principal::anonymous() {
             approvals.remove(name.0.get_name());
@@ -117,7 +115,7 @@ pub fn is_approved_to(name: &str, approved_to: &Principal) -> bool {
 }
 
 pub fn remove_approval(name: &str) {
-    STATE.with(|mut s| {
+    STATE.with(|s| {
         let mut approvals = s.approvals.borrow_mut();
         approvals.remove(name);
     });

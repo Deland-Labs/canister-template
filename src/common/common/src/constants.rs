@@ -18,9 +18,9 @@ pub const ENV_PRODUCTION: &str = "production";
 
 
 #[from_env]
-const COMMON_CANISTER_IDS_MOCK: &str = "";
-pub static CANISTER_IDS_MOCK: Lazy<Principal> =
-    Lazy::new(|| load_dev_or_env(CanisterNames::Mock, COMMON_CANISTER_IDS_MOCK));
+const COMMON_CANISTER_IDS_MOCK_SAMPLE_CANISTER: &str = "";
+pub static CANISTER_IDS_MOCK_SAMPLE_CANISTER: Lazy<Principal> =
+    Lazy::new(|| load_dev_or_env(CanisterNames::MockSampleCanister, COMMON_CANISTER_IDS_MOCK_SAMPLE_CANISTER));
 
 #[from_env]
 pub const ENV: &str = ENV_DEV;

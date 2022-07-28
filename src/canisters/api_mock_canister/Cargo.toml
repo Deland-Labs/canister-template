@@ -1,5 +1,5 @@
 [package]
-name = "api_mock_icnaming"
+name = "api_mock_canister"
 version = "0.1.0"
 edition = "2021"
 
@@ -13,10 +13,10 @@ candid = "0.7.12"
 serde = "1.0.136"
 serde_bytes = "0.11"
 log = "0.4"
-common = { path = "../../commons/common"}
+common = { path = "../../common/common"}
 thiserror = "1.0"
 anyhow = "1.0.57"
 
 [dev-dependencies]
-test_common = { path = "../../commons/test_common" }
+test_common = { path = "../../common/test_common" }
 async-std = { version = "1.11", features = ["attributes"] }
