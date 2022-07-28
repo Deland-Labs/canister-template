@@ -34,7 +34,7 @@
     "text-encoding": "^0.7.0",
     "tslib": "^2.3.1",
     "yargs": "^17.0.0",
-    "mathjs": "^10.5.1"
+    "mathjs": "^11.0.0"
   },
   "devDependencies": {
     "@deland-labs/dft_all_features_server": "0.6.0",
