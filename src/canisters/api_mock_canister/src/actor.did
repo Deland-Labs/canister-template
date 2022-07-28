@@ -3,7 +3,7 @@ type BooleanActorResponse = variant { Ok : bool; Err : ErrorInfo_1 };
 type ErrorInfo = record { code : nat32; message : text };
 type ErrorInfo_1 = record { code : nat32; message : text };
 type GetNamesResponse = record { names : vec record { text; text } };
-type NamingError = variant {
+type MockError = variant {
   RemoteError : ErrorInfo;
   TopNameAlreadyExists;
   InvalidCanisterName;
@@ -38,9 +38,9 @@ type NamingError = variant {
 };
 type QuotaType = variant { LenEq : nat8; LenGte : nat8 };
 type QuotaType_1 = variant { LenEq : nat8; LenGte : nat8 };
-type Result = variant { Ok : BooleanActorResponse; Err : NamingError };
-type Result_1 = variant { Ok : GetNamesResponse; Err : NamingError };
-type Result_2 = variant { Ok : nat32; Err : NamingError };
+type Result = variant { Ok : BooleanActorResponse; Err : MockError };
+type Result_1 = variant { Ok : GetNamesResponse; Err : MockError };
+type Result_2 = variant { Ok : nat32; Err : MockError };
 type Result_3 = variant { Ok : BooleanActorResponse; Err : ErrorInfo_1 };
 type TransferFromQuotaRequest = record {
   to : principal;

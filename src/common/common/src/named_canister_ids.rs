@@ -43,7 +43,7 @@ impl Default for NamedCanisterIds {
 impl NamedCanisterIds {
     pub fn get_canister_id(&self, name: CanisterNames) -> Principal {
         match name {
-            CanisterNames::Mock => *CANISTER_IDS_MOCK.deref(),
+            CanisterNames::MockSampleCanister => *CANISTER_IDS_MOCK_SAMPLE_CANISTER.deref(),
         }
     }
 }
@@ -97,5 +97,5 @@ pub fn update_dev_named_canister_ids(ids: &HashMap<CanisterNames, Principal>) {
 #[derive(Eq, Ord, PartialOrd, PartialEq, Hash, Debug, Copy, Clone, CandidType, Deserialize)]
 #[repr(u8)]
 pub enum CanisterNames {
-    Mock,
+    MockSampleCanister,
 }

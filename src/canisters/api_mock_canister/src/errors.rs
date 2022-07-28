@@ -4,7 +4,7 @@ use std::fmt::{Display, Formatter};
 use thiserror::Error;
 
 #[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, CandidType, Deserialize, Error)]
-pub enum NamingError {
+pub enum MockError {
     #[error("there is a unknown error raised")]
     Unknown,
     #[error("error from remote, {0:?}")]
@@ -76,40 +76,40 @@ pub enum NamingError {
     InvalidApproveAmount,
 }
 
-impl NamingError {
+impl MockError {
     pub(crate) fn code(&self) -> u32 {
         match self {
-            NamingError::Unknown => 1,
-            NamingError::RemoteError(_) => 2,
-            NamingError::InvalidCanisterName => 3,
-            NamingError::InvalidOwner => 4,
-            NamingError::OwnerOnly => 5,
-            NamingError::InvalidName { .. } => 6,
-            NamingError::NameUnavailable { .. } => 7,
-            NamingError::PermissionDenied => 8,
-            NamingError::RegistrationHasBeenTaken => 9,
-            NamingError::RegistrationNotFound => 10,
-            NamingError::TopNameAlreadyExists => 11,
-            NamingError::RegistryNotFoundError { .. } => 12,
-            NamingError::ResolverNotFoundError { .. } => 13,
-            NamingError::OperatorShouldNotBeTheSameToOwner => 14,
-            NamingError::YearsRangeError { .. } => 15,
-            NamingError::InvalidResolverKey { .. } => 16,
-            NamingError::ValueMaxLengthError { .. } => 17,
-            NamingError::ValueShouldBeInRangeError { .. } => 18,
-            NamingError::TooManyFavorites { .. } => 19,
-            NamingError::Unauthorized => 20,
-            NamingError::InvalidQuotaOrderDetails => 21,
-            NamingError::PendingOrder => 22,
-            NamingError::OrderNotFound => 23,
-            NamingError::RefundFailed => 24,
-            NamingError::OperatorCountExceeded => 25,
-            NamingError::CanisterCallError { .. } => 26,
-            NamingError::InvalidResolverValueFormat { .. } => 27,
-            NamingError::Conflict => 28,
-            NamingError::InsufficientQuota => 29,
-            NamingError::RenewalYearsError { .. } => 30,
-            NamingError::InvalidApproveAmount => 31,
+            MockError::Unknown => 1,
+            MockError::RemoteError(_) => 2,
+            MockError::InvalidCanisterName => 3,
+            MockError::InvalidOwner => 4,
+            MockError::OwnerOnly => 5,
+            MockError::InvalidName { .. } => 6,
+            MockError::NameUnavailable { .. } => 7,
+            MockError::PermissionDenied => 8,
+            MockError::RegistrationHasBeenTaken => 9,
+            MockError::RegistrationNotFound => 10,
+            MockError::TopNameAlreadyExists => 11,
+            MockError::RegistryNotFoundError { .. } => 12,
+            MockError::ResolverNotFoundError { .. } => 13,
+            MockError::OperatorShouldNotBeTheSameToOwner => 14,
+            MockError::YearsRangeError { .. } => 15,
+            MockError::InvalidResolverKey { .. } => 16,
+            MockError::ValueMaxLengthError { .. } => 17,
+            MockError::ValueShouldBeInRangeError { .. } => 18,
+            MockError::TooManyFavorites { .. } => 19,
+            MockError::Unauthorized => 20,
+            MockError::InvalidQuotaOrderDetails => 21,
+            MockError::PendingOrder => 22,
+            MockError::OrderNotFound => 23,
+            MockError::RefundFailed => 24,
+            MockError::OperatorCountExceeded => 25,
+            MockError::CanisterCallError { .. } => 26,
+            MockError::InvalidResolverValueFormat { .. } => 27,
+            MockError::Conflict => 28,
+            MockError::InsufficientQuota => 29,
+            MockError::RenewalYearsError { .. } => 30,
+            MockError::InvalidApproveAmount => 31,
         }
     }
 }
@@ -129,27 +129,27 @@ impl Display for ErrorInfo {
     }
 }
 
-pub fn get_error_code(error: NamingError) -> ErrorInfo {
+pub fn get_error_code(error: MockError) -> ErrorInfo {
     ErrorInfo {
         code: error.code(),
         message: error.to_string(),
     }
 }
 
-pub type ServiceResult<T> = anyhow::Result<T, NamingError>;
+pub type ServiceResult<T> = anyhow::Result<T, MockError>;
 
 /// A helper function to convert anyhow::Result<T, ICNSError> to ICNSResult<T>
 pub type ActorResult<T> = Result<T, ErrorInfo>;
 
-impl From<NamingError> for ErrorInfo {
-    fn from(error: NamingError) -> Self {
+impl From<MockError> for ErrorInfo {
+    fn from(error: MockError) -> Self {
         get_error_code(error)
     }
 }
 
-impl From<ErrorInfo> for NamingError {
+impl From<ErrorInfo> for MockError {
     fn from(error: ErrorInfo) -> Self {
-        NamingError::RemoteError(error)
+        MockError::RemoteError(error)
     }
 }
 
