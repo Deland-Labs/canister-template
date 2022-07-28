@@ -1,4 +1,4 @@
-use crate::errors::{BooleanActorResponse, NamingError, ServiceResult};
+use crate::errors::{BooleanActorResponse, MockError, ServiceResult};
 use crate::mock_utils::FirstLevelName;
 use crate::state::{
     canister_module_init, is_approved_to, is_name_owner, must_not_anonymous, set_approval,
@@ -77,7 +77,7 @@ async fn transfer_from(name: String) -> BooleanActorResponse {
     );
 
     if is_approved_to(&name.clone(), &caller.clone()) == false {
-        return BooleanActorResponse::new(Err(NamingError::PermissionDenied));
+        return BooleanActorResponse::new(Err(MockError::PermissionDenied));
     }
 
     STATE.with(|state| {
@@ -86,7 +86,7 @@ async fn transfer_from(name: String) -> BooleanActorResponse {
         if let Some(registry) = registries.get_mut(&name) {
             *registry = caller.clone();
         } else {
-            return BooleanActorResponse::new(Err(NamingError::RegistrationNotFound));
+            return BooleanActorResponse::new(Err(MockError::RegistrationNotFound));
         }
         BooleanActorResponse::Ok(true)
     })
@@ -112,7 +112,7 @@ async fn transfer(name: String, new_owner: Principal) -> BooleanActorResponse {
                 if let Some(registry) = registries.get_mut(&name) {
                     *registry = new_owner.clone();
                 } else {
-                    return BooleanActorResponse::new(Err(NamingError::RegistrationNotFound));
+                    return BooleanActorResponse::new(Err(MockError::RegistrationNotFound));
                 }
                 BooleanActorResponse::Ok(true)
             })
