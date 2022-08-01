@@ -23,7 +23,7 @@ pub static CANISTER_IDS_MOCK_SAMPLE_CANISTER: Lazy<Principal> =
     Lazy::new(|| load_dev_or_env(CanisterNames::MockSampleCanister, COMMON_CANISTER_IDS_MOCK_SAMPLE_CANISTER));
 
 #[from_env]
-pub const ENV: &str = ENV_DEV;
+pub const COMMON_CANISTER_ENV: &str = "dev";
 
 pub enum CommonEnv {
     Dev,
@@ -33,9 +33,9 @@ pub enum CommonEnv {
 
 pub fn is_env(env: CommonEnv) -> bool {
     match env {
-        CommonEnv::Dev => ENV == ENV_DEV,
-        CommonEnv::Staging => ENV == ENV_STAGING,
-        CommonEnv::Production => ENV == ENV_PRODUCTION,
+        CommonEnv::Dev => COMMON_CANISTER_ENV == ENV_DEV,
+        CommonEnv::Staging => COMMON_CANISTER_ENV == ENV_STAGING,
+        CommonEnv::Production => COMMON_CANISTER_ENV == ENV_PRODUCTION,
     }
 }
 
