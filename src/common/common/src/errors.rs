@@ -11,6 +11,14 @@ pub enum CommonError {
     RemoteError(ErrorInfo),
     #[error("Unauthorized, please login first")]
     Unauthorized,
+    #[error("Permission denied")]
+    PermissionDenied,
+    #[error("Length of {field:?} must be in range [{min:?}, {max:?})")]
+    ValueShouldBeInRangeError {
+        field: String,
+        min: usize,
+        max: usize,
+    },
 }
 
 impl CommonError {
@@ -19,6 +27,8 @@ impl CommonError {
             CommonError::Unknown => 1,
             CommonError::RemoteError(_) => 2,
             CommonError::Unauthorized => 3,
+            CommonError::PermissionDenied => 4,
+            CommonError::ValueShouldBeInRangeError { .. } => 5,
         }
     }
 }

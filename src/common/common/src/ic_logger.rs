@@ -1,4 +1,4 @@
-use crate::constants::{is_dev_env, ENV};
+use crate::constants::{is_dev_env, COMMON_CANISTER_ENV};
 use ic_cdk::api;
 use log::{info, Level, LevelFilter, Metadata, Record};
 use std::panic;
@@ -51,7 +51,7 @@ impl ICLogger {
                 let message = format!("{}", data);
                 api::print(Paint::red(message).to_string());
             }));
-            info!("current wasm is a {} package", ENV);
+            info!("current wasm is a {} package", COMMON_CANISTER_ENV);
         }
     }
 }
