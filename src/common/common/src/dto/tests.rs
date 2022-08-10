@@ -54,26 +54,3 @@ mod get_page_input {
         );
     }
 }
-
-mod owner_can_operate {
-    use super::*;
-
-    #[rstest]
-    fn test_owner_can_operate(_setup: ()) {
-        let owner1 = Principal::from_text("rrkah-fqaaa-aaaaa-aaaaq-cai").unwrap();
-        let operator = Principal::from_text("rrkah-fqaaa-aaaaa-aaaaq-cai").unwrap();
-
-        let mut operators = HashSet::new();
-        operators.insert(operator);
-        let users = RegistryUsers {
-            owner: owner1,
-            operators,
-        };
-
-        assert_eq!(users.can_operate(&Principal::anonymous()), false);
-        assert_eq!(users.can_operate(&owner1), true);
-        assert_eq!(users.can_operate(&operator), true);
-
-        assert_eq!(users.is_owner(&owner1), true);
-    }
-}
