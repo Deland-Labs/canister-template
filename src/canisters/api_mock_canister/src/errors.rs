@@ -138,7 +138,6 @@ pub fn get_error_code(error: MockError) -> ErrorInfo {
 
 pub type ServiceResult<T> = anyhow::Result<T, MockError>;
 
-/// A helper function to convert anyhow::Result<T, ICNSError> to ICNSResult<T>
 pub type ActorResult<T> = Result<T, ErrorInfo>;
 
 impl From<MockError> for ErrorInfo {

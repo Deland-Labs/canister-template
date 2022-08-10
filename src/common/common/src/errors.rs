@@ -57,7 +57,6 @@ pub fn get_error_code(error: CommonError) -> ErrorInfo {
 
 pub type ServiceResult<T> = anyhow::Result<T, CommonError>;
 
-/// A helper function to convert anyhow::Result<T, ICNSError> to ICNSResult<T>
 pub type ActorResult<T> = Result<T, ErrorInfo>;
 
 impl From<CommonError> for ErrorInfo {

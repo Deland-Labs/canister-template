@@ -8,8 +8,8 @@ pub fn generate_envs() -> Result<()> {
     // generate git info
     // vergen(Config::default())?;
     //
-    // println!("rerun-if-env-changed=NAMING_CANISTER_ENV");
-    // let env = if let Some(env) = option_env!("NAMING_CANISTER_ENV") {
+    // println!("rerun-if-env-changed=COMMON_CANISTER_ENV");
+    // let env = if let Some(env) = option_env!("COMMON_CANISTER_ENV") {
     //     env
     // } else {
     //     "dev"

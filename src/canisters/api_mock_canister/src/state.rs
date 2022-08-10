@@ -55,11 +55,7 @@ pub fn validate_name(name: &str) -> ServiceResult<FirstLevelName> {
             reason: "it must be second level name".to_string(),
         });
     }
-    // if result.get_top_level().unwrap() != NAMING_TOP_LABEL {
-    //     return Err(MockError::InvalidName {
-    //         reason: format!("top level of name must be {}", NAMING_TOP_LABEL),
-    //     });
-    // }
+
     let first = result.get_current_level().unwrap();
     if first.len() > 63 {
         return Err(MockError::InvalidName {
