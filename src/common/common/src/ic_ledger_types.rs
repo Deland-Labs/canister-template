@@ -1,12 +1,13 @@
-use candid::types::reference::Func;
+use std::convert::TryFrom;
+use std::fmt;
+use std::ops::{Add, AddAssign, Sub, SubAssign};
+
 use candid::{CandidType, Deserialize, Principal};
+use candid::types::reference::Func;
 use ic_cdk::api::call::CallResult;
 use serde::Serialize;
 use serde_bytes::ByteBuf;
 use sha2::{Digest, Sha224};
-use std::convert::TryFrom;
-use std::fmt;
-use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 /// The subaccont that is used by default.
 pub const DEFAULT_SUBACCOUNT: Subaccount = Subaccount([0; 32]);
@@ -139,11 +140,11 @@ static ACCOUNT_DOMAIN_SEPERATOR: &[u8] = b"\x0Aaccount-id";
 impl AccountIdentifier {
     pub fn new(account: Principal, sub_account: Option<Subaccount>) -> AccountIdentifier {
         let mut hash = Sha224::new();
-        hash.update(ACCOUNT_DOMAIN_SEPERATOR);
-        hash.update(account.as_slice());
+        let _ = hash.update(ACCOUNT_DOMAIN_SEPERATOR);
+        let _ = hash.update(account.as_slice());
 
         let sub_account = sub_account.unwrap_or(DEFAULT_SUBACCOUNT);
-        hash.update(&sub_account.0);
+        let _ = hash.update(&sub_account.0);
 
         AccountIdentifier {
             hash: hash.finalize().into(),
@@ -580,8 +581,9 @@ pub async fn query_archived_blocks(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::string::ToString;
+
+    use super::*;
 
     #[test]
     fn test_account_id() {
@@ -591,7 +593,7 @@ mod tests {
                 Principal::from_text(
                     "iooej-vlrze-c5tme-tn7qt-vqe7z-7bsj5-ebxlc-hlzgs-lueo3-3yast-pae"
                 )
-                .unwrap(),
+                    .unwrap(),
                 None
             )
             .to_string()
