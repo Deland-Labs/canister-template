@@ -11,6 +11,14 @@ pub enum CommonError {
     RemoteError(ErrorInfo),
     #[error("Unauthorized, please login first")]
     Unauthorized,
+    #[error("Permission denied")]
+    PermissionDenied,
+    #[error("Length of {field:?} must be in range [{min:?}, {max:?})")]
+    ValueShouldBeInRangeError {
+        field: String,
+        min: usize,
+        max: usize,
+    },
 }
 
 impl CommonError {
@@ -19,6 +27,8 @@ impl CommonError {
             CommonError::Unknown => 1,
             CommonError::RemoteError(_) => 2,
             CommonError::Unauthorized => 3,
+            CommonError::PermissionDenied => 4,
+            CommonError::ValueShouldBeInRangeError { .. } => 5,
         }
     }
 }
@@ -47,7 +57,6 @@ pub fn get_error_code(error: CommonError) -> ErrorInfo {
 
 pub type ServiceResult<T> = anyhow::Result<T, CommonError>;
 
-/// A helper function to convert anyhow::Result<T, ICNSError> to ICNSResult<T>
 pub type ActorResult<T> = Result<T, ErrorInfo>;
 
 impl From<CommonError> for ErrorInfo {
