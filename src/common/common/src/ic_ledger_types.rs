@@ -1,6 +1,7 @@
-use candid::{types::reference::Func, CandidType, Principal};
+use candid::types::reference::Func;
+use candid::{CandidType, Deserialize, Principal};
 use ic_cdk::api::call::CallResult;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use serde_bytes::ByteBuf;
 use sha2::{Digest, Sha224};
 use std::convert::TryFrom;
@@ -132,23 +133,23 @@ pub type AccountId = [u8; 32];
 pub struct AccountIdentifier {
     hash: [u8; 28],
 }
-pub const EMPTY_SUBACCOUNT: Subaccount = Subaccount([0; 32]);
 
 static ACCOUNT_DOMAIN_SEPERATOR: &[u8] = b"\x0Aaccount-id";
 
 impl AccountIdentifier {
     pub fn new(account: Principal, sub_account: Option<Subaccount>) -> AccountIdentifier {
         let mut hash = Sha224::new();
-        let _ = hash.write(ACCOUNT_DOMAIN_SEPERATOR).unwrap();
-        let _ = hash.write(account.as_slice()).unwrap();
+        hash.update(ACCOUNT_DOMAIN_SEPERATOR);
+        hash.update(account.as_slice());
 
-        let sub_account = sub_account.unwrap_or(EMPTY_SUBACCOUNT);
-        let _ = hash.write(&sub_account.0[..]).unwrap();
+        let sub_account = sub_account.unwrap_or(DEFAULT_SUBACCOUNT);
+        hash.update(&sub_account.0);
 
         AccountIdentifier {
             hash: hash.finalize().into(),
         }
     }
+
 
     pub fn from_hex(hex_str: &str) -> Result<AccountIdentifier, String> {
         let hex: Vec<u8> = hex::decode(hex_str).map_err(|e| e.to_string())?;
@@ -197,6 +198,30 @@ impl AccountIdentifier {
     }
 }
 
+fn check_sum(hex: [u8; 32]) -> Result<AccountIdentifier, String> {
+    // Get the checksum provided
+    let found_checksum = &hex[0..4];
+
+    // Copy the hash into a new array
+    let mut hash = [0; 28];
+    hash.copy_from_slice(&hex[4..32]);
+
+    let account_id = AccountIdentifier { hash };
+    let expected_checksum = account_id.generate_checksum();
+
+    // Check the generated checksum matches
+    if expected_checksum == found_checksum {
+        Ok(account_id)
+    } else {
+        Err(format!(
+            "Checksum failed for {}, expected check bytes {} but found {}",
+            hex::encode(&hex[..]),
+            hex::encode(expected_checksum),
+            hex::encode(found_checksum),
+        ))
+    }
+}
+
 impl TryFrom<[u8; 32]> for AccountIdentifier {
     type Error = String;
 
@@ -206,7 +231,9 @@ impl TryFrom<[u8; 32]> for AccountIdentifier {
         hasher.update(hash);
         let crc32_bytes = hasher.finalize().to_be_bytes();
         // bytes[0..4] is the checksum
-        let body_bytes: [u8; 28] = bytes[4..32].try_into().expect("slice with incorrect length");
+        let body_bytes: [u8; 28] = bytes[4..32]
+            .try_into()
+            .expect("slice with incorrect length");
         if bytes[0..4] == crc32_bytes[0..4] {
             Ok(Self { hash: body_bytes })
         } else {
@@ -223,7 +250,7 @@ impl AsRef<[u8]> for AccountIdentifier {
 
 impl fmt::Display for AccountIdentifier {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", hex::encode(self.as_ref()))
+        write!(f, "{}", hex::encode(self.to_vec()))
     }
 }
 
@@ -439,13 +466,13 @@ impl CandidType for QueryArchiveFn {
 /// # Example
 /// ```no_run
 /// use ic_cdk::api::{caller, call::call};
-/// use ic_ledger_types::{AccountIdentifier, AccountBalanceArgs, Tokens, DEFAULT_SUBACCOUNT, MAINNET_LEDGER_CANISTER_ID, account_balance};
+/// use common::ic_ledger_types::{AccountIdentifier, AccountBalanceArgs, Tokens, DEFAULT_SUBACCOUNT, MAINNET_LEDGER_CANISTER_ID, account_balance};
 ///
 /// async fn check_callers_balance() -> Tokens {
 ///   account_balance(
 ///     MAINNET_LEDGER_CANISTER_ID,
 ///     AccountBalanceArgs {
-///       account: AccountIdentifier::new(&caller(), &DEFAULT_SUBACCOUNT)
+///       account: AccountIdentifier::new(caller(), None)
 ///     }
 ///   ).await.expect("call to ledger failed")
 /// }
@@ -462,7 +489,7 @@ pub async fn account_balance(
 /// # Example
 /// ```no_run
 /// use ic_cdk::api::{caller, call::call};
-/// use ic_ledger_types::{AccountIdentifier, BlockIndex, Memo, TransferArgs, Tokens, DEFAULT_SUBACCOUNT, DEFAULT_FEE, MAINNET_LEDGER_CANISTER_ID, transfer};
+/// use common::ic_ledger_types::{AccountIdentifier, BlockIndex, Memo, TransferArgs, Tokens, DEFAULT_SUBACCOUNT, DEFAULT_FEE, MAINNET_LEDGER_CANISTER_ID, transfer};
 ///
 /// async fn transfer_to_caller() -> BlockIndex {
 ///   transfer(
@@ -472,7 +499,7 @@ pub async fn account_balance(
 ///       amount: Tokens::from_e8s(1_000_000),
 ///       fee: DEFAULT_FEE,
 ///       from_subaccount: None,
-///       to: AccountIdentifier::new(&caller(), &DEFAULT_SUBACCOUNT),
+///       to: AccountIdentifier::new(caller(), None),
 ///       created_at_time: None,
 ///     }
 ///   ).await.expect("call to ledger failed").expect("transfer failed")
@@ -496,7 +523,7 @@ pub struct Symbol {
 /// ```no_run
 /// use candid::Principal;
 /// use ic_cdk::api::{caller, call::call};
-/// use ic_ledger_types::{Symbol, token_symbol};
+/// use common::ic_ledger_types::{Symbol, token_symbol};
 ///
 /// async fn symbol(ledger_canister_id: Principal) -> String {
 ///   token_symbol(ledger_canister_id).await.expect("call to ledger failed").symbol
@@ -512,7 +539,7 @@ pub async fn token_symbol(ledger_canister_id: Principal) -> CallResult<Symbol> {
 /// ```no_run
 /// use candid::Principal;
 /// use ic_cdk::api::call::CallResult;
-/// use ic_ledger_types::{BlockIndex, Block, GetBlocksArgs, query_blocks, query_archived_blocks};
+/// use common::ic_ledger_types::{BlockIndex, Block, GetBlocksArgs, query_blocks, query_archived_blocks};
 ///
 /// async fn query_one_block(ledger: Principal, block_index: BlockIndex) -> CallResult<Option<Block>> {
 ///   let args = GetBlocksArgs { start: block_index, length: 1 };
