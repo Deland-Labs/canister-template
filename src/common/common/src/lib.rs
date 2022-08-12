@@ -19,6 +19,7 @@ pub mod named_principals;
 pub mod permissions;
 pub mod state;
 pub mod timeout_lock;
+pub mod ic_ledger_types;
 
 #[cfg(test)]
 mod test_common;
