@@ -19,4 +19,4 @@ anyhow = "1.0.57"
 
 [dev-dependencies]
 test_common = { path = "../../common/test_common" }
-async-std = { version = "1.11", features = ["attributes"] }
+async-std = { version = "1.12", features = ["attributes"] }
