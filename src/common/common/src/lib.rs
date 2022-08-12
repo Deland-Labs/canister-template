@@ -1,4 +1,4 @@
-use crate::errors::{CommonError,ServiceResult};
+use crate::errors::{CommonError, ServiceResult};
 use crate::named_canister_ids::{is_named_canister_id, CanisterNames};
 use crate::named_principals::is_named_principal;
 use crate::permissions::is_admin;
@@ -12,6 +12,7 @@ pub mod cycles_minting_types;
 pub mod dto;
 pub mod errors;
 pub mod http;
+pub mod ic_ledger_types;
 pub mod ic_logger;
 pub mod metrics_encoder;
 pub mod named_canister_ids;
