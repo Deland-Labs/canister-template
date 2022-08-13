@@ -2,8 +2,8 @@ use std::convert::TryFrom;
 use std::fmt;
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 
-use candid::{CandidType, Deserialize, Principal};
 use candid::types::reference::Func;
+use candid::{CandidType, Deserialize, Principal};
 use ic_cdk::api::call::CallResult;
 use serde::Serialize;
 use serde_bytes::ByteBuf;
@@ -151,7 +151,6 @@ impl AccountIdentifier {
         }
     }
 
-
     pub fn from_hex(hex_str: &str) -> Result<AccountIdentifier, String> {
         let hex: Vec<u8> = hex::decode(hex_str).map_err(|e| e.to_string())?;
         Self::from_slice(&hex[..])
@@ -275,7 +274,7 @@ pub struct TransferArgs {
     pub amount: Tokens,
     pub fee: Tokens,
     pub from_subaccount: Option<Subaccount>,
-    pub to: AccountIdentifier,
+    pub to: AccountId,
     pub created_at_time: Option<Timestamp>,
 }
 
@@ -500,7 +499,7 @@ pub async fn account_balance(
 ///       amount: Tokens::from_e8s(1_000_000),
 ///       fee: DEFAULT_FEE,
 ///       from_subaccount: None,
-///       to: AccountIdentifier::new(caller(), None),
+///       to: AccountIdentifier::new(caller(), None).to_address(),
 ///       created_at_time: None,
 ///     }
 ///   ).await.expect("call to ledger failed").expect("transfer failed")
@@ -593,7 +592,7 @@ mod tests {
                 Principal::from_text(
                     "iooej-vlrze-c5tme-tn7qt-vqe7z-7bsj5-ebxlc-hlzgs-lueo3-3yast-pae"
                 )
-                    .unwrap(),
+                .unwrap(),
                 None
             )
             .to_string()
