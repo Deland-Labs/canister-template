@@ -19,6 +19,11 @@ pub enum CommonError {
         min: usize,
         max: usize,
     },
+    #[error("canister call error, rejected by {rejection_code:?}")]
+    CanisterCallError {
+        message: String,
+        rejection_code: String,
+    },
 }
 
 impl CommonError {
@@ -29,6 +34,7 @@ impl CommonError {
             CommonError::Unauthorized => 3,
             CommonError::PermissionDenied => 4,
             CommonError::ValueShouldBeInRangeError { .. } => 5,
+            CommonError::CanisterCallError { .. } => 6,
         }
     }
 }

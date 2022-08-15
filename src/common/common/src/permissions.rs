@@ -1,9 +1,9 @@
-use crate::AuthPrincipal;
 use candid::Principal;
 
 use crate::errors::{CommonError, ServiceResult};
 use crate::named_canister_ids::{is_named_canister_id, CanisterNames};
 use crate::named_principals::{get_named_principals, is_named_principal, PRINCIPAL_NAME_ADMIN};
+use crate::types::AuthPrincipal;
 
 pub fn must_be_system_owner(caller: &Principal) -> ServiceResult<()> {
     must_not_anonymous(caller)?;

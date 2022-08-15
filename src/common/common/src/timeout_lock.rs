@@ -1,6 +1,7 @@
-use crate::TimeInNs;
 use core::cell::RefCell;
 use std::collections::HashMap;
+
+use crate::types::*;
 
 #[repr(u8)]
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]

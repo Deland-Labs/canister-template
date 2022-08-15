@@ -466,7 +466,7 @@ impl CandidType for QueryArchiveFn {
 /// # Example
 /// ```no_run
 /// use ic_cdk::api::{caller, call::call};
-/// use common::ic_ledger_types::{AccountIdentifier, AccountBalanceArgs, Tokens, DEFAULT_SUBACCOUNT, MAINNET_LEDGER_CANISTER_ID, account_balance};
+/// use common::types::ic_ledger_types::{AccountIdentifier, AccountBalanceArgs, Tokens, DEFAULT_SUBACCOUNT, MAINNET_LEDGER_CANISTER_ID, account_balance};
 ///
 /// async fn check_callers_balance() -> Tokens {
 ///   account_balance(
@@ -489,7 +489,7 @@ pub async fn account_balance(
 /// # Example
 /// ```no_run
 /// use ic_cdk::api::{caller, call::call};
-/// use common::ic_ledger_types::{AccountIdentifier, BlockIndex, Memo, TransferArgs, Tokens, DEFAULT_SUBACCOUNT, DEFAULT_FEE, MAINNET_LEDGER_CANISTER_ID, transfer};
+/// use common::types::ic_ledger_types::{AccountIdentifier, BlockIndex, Memo, TransferArgs, Tokens, DEFAULT_SUBACCOUNT, DEFAULT_FEE, MAINNET_LEDGER_CANISTER_ID, transfer};
 ///
 /// async fn transfer_to_caller() -> BlockIndex {
 ///   transfer(
@@ -523,7 +523,7 @@ pub struct Symbol {
 /// ```no_run
 /// use candid::Principal;
 /// use ic_cdk::api::{caller, call::call};
-/// use common::ic_ledger_types::{Symbol, token_symbol};
+/// use common::types::ic_ledger_types::{Symbol, token_symbol};
 ///
 /// async fn symbol(ledger_canister_id: Principal) -> String {
 ///   token_symbol(ledger_canister_id).await.expect("call to ledger failed").symbol
@@ -539,7 +539,7 @@ pub async fn token_symbol(ledger_canister_id: Principal) -> CallResult<Symbol> {
 /// ```no_run
 /// use candid::Principal;
 /// use ic_cdk::api::call::CallResult;
-/// use common::ic_ledger_types::{BlockIndex, Block, GetBlocksArgs, query_blocks, query_archived_blocks};
+/// use common::types::ic_ledger_types::{BlockIndex, Block, GetBlocksArgs, query_blocks, query_archived_blocks};
 ///
 /// async fn query_one_block(ledger: Principal, block_index: BlockIndex) -> CallResult<Option<Block>> {
 ///   let args = GetBlocksArgs { start: block_index, length: 1 };

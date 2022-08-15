@@ -5,6 +5,7 @@ use std::fmt::{Display, Formatter};
 use std::ops::Deref;
 
 use crate::constants::*;
+use crate::types::CanisterId;
 use candid::Principal;
 use ic_cdk::api;
 use log::info;
@@ -44,6 +45,9 @@ impl NamedCanisterIds {
     pub fn get_canister_id(&self, name: CanisterNames) -> Principal {
         match name {
             CanisterNames::MockSampleCanister => *CANISTER_IDS_MOCK_SAMPLE_CANISTER.deref(),
+            CanisterNames::ICLedger => *CANISTER_IDS_IC_LEDGER_CANISTER.deref(),
+            CanisterNames::ICManagement => *CANISTER_IDS_IC_MANAGEMENT_CANISTER.deref(),
+            CanisterNames::DFTCanister(canister_id) => canister_id.0,
         }
     }
 }
@@ -98,4 +102,7 @@ pub fn update_dev_named_canister_ids(ids: &HashMap<CanisterNames, Principal>) {
 #[repr(u8)]
 pub enum CanisterNames {
     MockSampleCanister,
+    DFTCanister(CanisterId),
+    ICLedger,
+    ICManagement,
 }
