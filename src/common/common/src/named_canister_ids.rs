@@ -42,24 +42,26 @@ impl Default for NamedCanisterIds {
 }
 
 impl NamedCanisterIds {
-    pub fn get_canister_id(&self, name: CanisterNames) -> Principal {
+    pub fn get_canister_id(&self, name: CanisterNames) -> CanisterId {
         match name {
-            CanisterNames::MockSampleCanister => *CANISTER_IDS_MOCK_SAMPLE_CANISTER.deref(),
-            CanisterNames::ICLedger => *CANISTER_IDS_IC_LEDGER_CANISTER.deref(),
-            CanisterNames::ICManagement => *CANISTER_IDS_IC_MANAGEMENT_CANISTER.deref(),
-            CanisterNames::DFTCanister(canister_id) => canister_id.0,
+            CanisterNames::MockSampleCanister => {
+                CanisterId(*CANISTER_IDS_MOCK_SAMPLE_CANISTER.deref())
+            }
+            CanisterNames::ICLedger => CanisterId(*CANISTER_IDS_IC_LEDGER_CANISTER.deref()),
+            CanisterNames::ICManagement => CanisterId(*CANISTER_IDS_IC_MANAGEMENT_CANISTER.deref()),
+            CanisterNames::DFTCanister(canister_id) => canister_id,
         }
     }
 }
 
-pub fn get_named_get_canister_id(name: CanisterNames) -> Principal {
+pub fn get_named_get_canister_id(name: CanisterNames) -> CanisterId {
     NAMED_CANISTER_IDS.with(|n| {
         let n = n.borrow();
         n.get_canister_id(name)
     })
 }
 
-pub fn is_named_canister_id(name: CanisterNames, id: Principal) -> bool {
+pub fn is_named_canister_id(name: CanisterNames, id: CanisterId) -> bool {
     NAMED_CANISTER_IDS.with(|n| {
         let n = n.borrow();
         n.get_canister_id(name) == id
@@ -67,7 +69,7 @@ pub fn is_named_canister_id(name: CanisterNames, id: Principal) -> bool {
 }
 
 pub fn ensure_current_canister_id_match(name: CanisterNames) -> Result<(), String> {
-    let current = api::id();
+    let current = CanisterId(api::id());
     let expected = get_named_get_canister_id(name);
     if current != expected {
         Err(format!(

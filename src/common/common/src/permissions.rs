@@ -3,7 +3,7 @@ use candid::Principal;
 use crate::errors::{CommonError, ServiceResult};
 use crate::named_canister_ids::{is_named_canister_id, CanisterNames};
 use crate::named_principals::{get_named_principals, is_named_principal, PRINCIPAL_NAME_ADMIN};
-use crate::types::AuthPrincipal;
+use crate::types::{AuthPrincipal, CanisterId};
 
 pub fn must_be_system_owner(caller: &Principal) -> ServiceResult<()> {
     must_not_anonymous(caller)?;
@@ -33,7 +33,7 @@ pub fn must_be_in_named_principal(caller: &Principal, names: &[&str]) -> Service
 
 pub fn must_be_named_canister(caller: Principal, name: CanisterNames) -> ServiceResult<()> {
     must_not_anonymous(&caller)?;
-    if !is_named_canister_id(name, caller) {
+    if !is_named_canister_id(name, CanisterId(caller)) {
         return Err(CommonError::Unauthorized);
     }
     Ok(())
@@ -42,7 +42,7 @@ pub fn must_be_named_canister(caller: Principal, name: CanisterNames) -> Service
 pub fn must_be_in_named_canister(caller: Principal, names: &[CanisterNames]) -> ServiceResult<()> {
     must_not_anonymous(&caller)?;
     for name in names {
-        if is_named_canister_id(*name, caller) {
+        if is_named_canister_id(*name, CanisterId(caller)) {
             return Ok(());
         }
     }
