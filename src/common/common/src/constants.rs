@@ -14,12 +14,32 @@ pub const ENV_DEV: &str = "dev";
 pub const ENV_STAGING: &str = "staging";
 pub const ENV_PRODUCTION: &str = "production";
 
-
 #[from_env]
 const COMMON_CANISTER_IDS_MOCK_SAMPLE_CANISTER: &str = "";
-pub static CANISTER_IDS_MOCK_SAMPLE_CANISTER: Lazy<Principal> =
-    Lazy::new(|| load_dev_or_env(CanisterNames::MockSampleCanister, COMMON_CANISTER_IDS_MOCK_SAMPLE_CANISTER));
+pub static CANISTER_IDS_MOCK_SAMPLE_CANISTER: Lazy<Principal> = Lazy::new(|| {
+    load_dev_or_env(
+        CanisterNames::MockSampleCanister,
+        COMMON_CANISTER_IDS_MOCK_SAMPLE_CANISTER,
+    )
+});
 
+#[from_env]
+const COMMON_CANISTER_IDS_IC_LEDGER_CANISTER: &str = "";
+pub static CANISTER_IDS_IC_LEDGER_CANISTER: Lazy<Principal> = Lazy::new(|| {
+    load_dev_or_env(
+        CanisterNames::ICLedger,
+        COMMON_CANISTER_IDS_IC_LEDGER_CANISTER,
+    )
+});
+
+#[from_env]
+const COMMON_CANISTER_IDS_IC_MANAGEMENT_CANISTER: &str = "";
+pub static CANISTER_IDS_IC_MANAGEMENT_CANISTER: Lazy<Principal> = Lazy::new(|| {
+    load_dev_or_env(
+        CanisterNames::ICLedger,
+        COMMON_CANISTER_IDS_IC_MANAGEMENT_CANISTER,
+    )
+});
 #[from_env]
 pub const COMMON_CANISTER_ENV: &str = "dev";
 
@@ -40,8 +60,6 @@ pub fn is_env(env: CommonEnv) -> bool {
 pub fn is_dev_env() -> bool {
     is_env(CommonEnv::Dev)
 }
-
-
 
 fn load_dev_or_env(name: CanisterNames, env_value: &str) -> Principal {
     if is_dev_env() {

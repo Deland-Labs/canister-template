@@ -1,6 +1,7 @@
 use crate::errors::{ActorResult, CommonError, ErrorInfo};
-use crate::ic_ledger_types::{Subaccount, TransferArgs, TransferResult};
 use crate::named_canister_ids::{get_named_get_canister_id, CanisterNames};
+use crate::types::ic_ledger_types::{Subaccount, TransferArgs, TransferResult};
+use crate::types::ic_management_types::*;
 use async_trait::async_trait;
 use candid::{CandidType, Nat, Principal};
 use ic_cdk::api::call::RejectionCode;
@@ -129,68 +130,6 @@ pub trait IDFTApi {
 pub trait IICLedgerApi {
     async fn transfer(&self, args: TransferArgs) -> ActorResult<TransferResult>;
 }
-
-#[derive(CandidType, Clone, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq)]
-pub struct CanisterIdRecord {
-    pub canister_id: Principal,
-}
-
-#[derive(CandidType, Debug, Clone, Deserialize)]
-pub struct CanisterSettings {
-    pub controllers: Option<Vec<Principal>>,
-    pub compute_allocation: Option<Nat>,
-    pub memory_allocation: Option<Nat>,
-    pub freezing_threshold: Option<Nat>,
-}
-
-#[allow(non_camel_case_types)]
-#[derive(CandidType, Debug, Deserialize)]
-pub enum CanisterStatus {
-    #[serde(rename = "running")]
-    Running,
-    #[serde(rename = "stopping")]
-    Stopping,
-    #[serde(rename = "stopped")]
-    Stopped,
-}
-
-#[derive(CandidType, Debug, Deserialize)]
-pub struct CanisterStatusResponse {
-    pub status: CanisterStatus,
-    pub settings: CanisterSettings,
-    pub module_hash: Option<Vec<u8>>,
-    pub controller: Principal,
-    pub memory_size: Nat,
-    pub cycles: Nat,
-}
-
-// Install Wasm
-#[derive(CandidType, Deserialize)]
-enum InstallMode {
-    #[serde(rename = "install")]
-    Install,
-    #[serde(rename = "reinstall")]
-    Reinstall,
-    #[serde(rename = "upgrade")]
-    Upgrade,
-}
-
-#[derive(CandidType, Deserialize)]
-struct CanisterInstall {
-    mode: InstallMode,
-    canister_id: Principal,
-    #[serde(with = "serde_bytes")]
-    wasm_module: Vec<u8>,
-    #[serde(with = "serde_bytes")]
-    arg: Vec<u8>,
-}
-
-#[derive(CandidType, Clone, Deserialize)]
-pub struct CreateCanisterArgs {
-    pub cycles: u64,
-    pub settings: CanisterSettings,
-}
-
 #[async_trait]
 pub trait IICManagementAPI {
     async fn create_canister(&self, args: CreateCanisterArgs) -> Result<CanisterIdRecord, String>;

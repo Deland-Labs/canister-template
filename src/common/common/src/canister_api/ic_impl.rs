@@ -1,7 +1,7 @@
 use ic_cdk::api;
 
 use super::*;
-use crate::named_canister_ids::CanisterNames;
+use crate::{named_canister_ids::CanisterNames, types::CanisterId};
 type CanisterID = Principal;
 
 #[derive(Debug)]
@@ -24,7 +24,7 @@ impl IDFTApi for DFTApi {
         nonce: Option<u64>,
     ) -> ActorResult<TransactionResponse> {
         call_canister_as_actor_result(
-            CanisterNames::DFTCanister(self.0),
+            CanisterNames::DFTCanister(CanisterId(self.0)),
             "transferFrom",
             (spender_sub_account, from, to, value, nonce),
         )
@@ -39,7 +39,7 @@ impl IDFTApi for DFTApi {
         nonce: Option<u64>,
     ) -> ActorResult<TransactionResponse> {
         call_canister_as_actor_result(
-            CanisterNames::DFTCanister(self.0),
+            CanisterNames::DFTCanister(CanisterId(self.0)),
             "transfer",
             (from_sub_account, to, value, nonce),
         )
@@ -48,7 +48,7 @@ impl IDFTApi for DFTApi {
 
     async fn balance_of(&self, token_holder: String) -> ActorResult<Nat> {
         call_canister_as_result(
-            CanisterNames::DFTCanister(self.0),
+            CanisterNames::DFTCanister(CanisterId(self.0)),
             "balanceOf",
             (token_holder,),
         )

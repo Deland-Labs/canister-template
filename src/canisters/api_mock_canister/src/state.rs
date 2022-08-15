@@ -3,7 +3,7 @@ use crate::mock_utils::{normalize_name, FirstLevelName, NameParseResult};
 use candid::Principal;
 use common::ic_logger::ICLogger;
 use common::named_canister_ids::{ensure_current_canister_id_match, CanisterNames};
-use common::AuthPrincipal;
+use common::types::AuthPrincipal;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::sync::Once;
