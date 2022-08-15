@@ -54,7 +54,7 @@ impl NamedCanisterIds {
     }
 }
 
-pub fn get_named_get_canister_id(name: CanisterNames) -> CanisterId {
+pub fn get_named_canister_id(name: CanisterNames) -> CanisterId {
     NAMED_CANISTER_IDS.with(|n| {
         let n = n.borrow();
         n.get_canister_id(name)
@@ -70,7 +70,7 @@ pub fn is_named_canister_id(name: CanisterNames, id: CanisterId) -> bool {
 
 pub fn ensure_current_canister_id_match(name: CanisterNames) -> Result<(), String> {
     let current = CanisterId(api::id());
-    let expected = get_named_get_canister_id(name);
+    let expected = get_named_canister_id(name);
     if current != expected {
         Err(format!(
             "Current canister id does not match expected canister id. Expected: {}, Current: {}",
