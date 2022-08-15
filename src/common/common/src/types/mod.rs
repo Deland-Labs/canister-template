@@ -135,7 +135,7 @@ impl CallContext {
     }
 
     pub fn must_be_named_canister(&self, name: CanisterNames) -> ServiceResult<AuthPrincipal> {
-        if !is_named_canister_id(name, self.caller) {
+        if !is_named_canister_id(name, CanisterId(self.caller)) {
             return Err(CommonError::Unauthorized);
         }
         Ok(AuthPrincipal(self.caller))
@@ -146,7 +146,7 @@ impl CallContext {
         names: &[CanisterNames],
     ) -> ServiceResult<AuthPrincipal> {
         for name in names {
-            if is_named_canister_id(*name, self.caller) {
+            if is_named_canister_id(*name, CanisterId(self.caller)) {
                 return Ok(AuthPrincipal(self.caller));
             }
         }

@@ -27,7 +27,7 @@ where
     }
     let canister_id = get_named_get_canister_id(canister_name);
     let call_result: Result<(TResult,), (RejectionCode, String)> =
-        call(canister_id, method, args).await;
+        call(canister_id.0, method, args).await;
     if call_result.is_err() {
         let (code, message) = call_result.err().unwrap();
         let code_string = format!("{:?}", code);
