@@ -1,5 +1,5 @@
 use crate::errors::{ActorResult, CommonError, ErrorInfo};
-use crate::named_canister_ids::{get_named_get_canister_id, CanisterNames};
+use crate::named_canister_ids::{get_named_canister_id, CanisterNames};
 use crate::types::ic_ledger_types::{Subaccount, TransferArgs, TransferResult};
 use crate::types::ic_management_types::*;
 use async_trait::async_trait;
@@ -25,7 +25,7 @@ where
     if logging {
         debug!("Calling {:?}::{}", canister_name, method);
     }
-    let canister_id = get_named_get_canister_id(canister_name);
+    let canister_id = get_named_canister_id(canister_name);
     let call_result: Result<(TResult,), (RejectionCode, String)> =
         call(canister_id.0, method, args).await;
     if call_result.is_err() {
