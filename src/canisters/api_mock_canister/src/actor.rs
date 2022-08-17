@@ -35,7 +35,7 @@ fn init_function() {
 #[candid_method(query, rename = "get_names")]
 fn get_names() -> ServiceResult<GetNamesResponse> {
     STATE.with(|state| {
-        let mut map = state.borrow().registries.borrow_mut();
+        let map = state.borrow().registries.borrow_mut();
         let res = map
             .borrow()
             .iter()
