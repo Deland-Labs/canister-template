@@ -5,8 +5,6 @@ use thiserror::Error;
 
 #[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, CandidType, Deserialize, Error)]
 pub enum CommonError {
-    #[error("there is a unknown error raised")]
-    Unknown,
     #[error("error from remote, {0:?}")]
     RemoteError(ErrorInfo),
     #[error("Unauthorized, please login first")]
@@ -24,17 +22,19 @@ pub enum CommonError {
         message: String,
         rejection_code: String,
     },
+    #[error("Unknown error, detail: {detail:?}")]
+    Unknown { detail: String },
 }
 
 impl CommonError {
     pub(crate) fn code(&self) -> u32 {
         match self {
-            CommonError::Unknown => 1,
             CommonError::RemoteError(_) => 2,
             CommonError::Unauthorized => 3,
             CommonError::PermissionDenied => 4,
             CommonError::ValueShouldBeInRangeError { .. } => 5,
             CommonError::CanisterCallError { .. } => 6,
+            CommonError::Unknown { .. } => 10000,
         }
     }
 }

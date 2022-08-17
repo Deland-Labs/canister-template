@@ -1,5 +1,4 @@
 use candid::{CandidType, Deserialize};
-use std::cmp::min;
 use std::fmt::Display;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, CandidType, Deserialize)]

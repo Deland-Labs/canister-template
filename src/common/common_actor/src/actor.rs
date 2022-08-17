@@ -1,19 +1,22 @@
-use crate::state::{State, STATE};
-use crate::stats_service::{Stats, StatsService};
+use std::collections::HashMap;
+
 use candid::candid_method;
+use ic_cdk::api;
+use ic_cdk_macros::*;
+use log::{debug, error, info};
+
 use common::constants::is_dev_env;
 use common::dto::{
     from_state_export_data, to_state_export_data, GetStatsResponse, LoadStateRequest,
     StateExportResponse,
 };
-use common::errors::{BooleanActorResponse, ErrorInfo, CommonError};
+use common::errors::{BooleanActorResponse, CommonError, ErrorInfo};
 use common::named_principals::PRINCIPAL_NAME_STATE_EXPORTER;
 use common::permissions::{must_be_named_principal, must_be_system_owner};
 use common::state::StableState;
-use ic_cdk::api;
-use ic_cdk_macros::*;
-use log::{debug, error, info};
-use std::collections::HashMap;
+
+use crate::state::{State, STATE};
+use crate::stats_service::{Stats, StatsService};
 
 #[query(name = "get_stats")]
 #[candid_method(query, rename = "get_stats")]
@@ -41,7 +44,9 @@ pub async fn export_state() -> StateExportResponse {
 #[candid_method(update, rename = "load_state")]
 pub fn load_state(request: LoadStateRequest) -> BooleanActorResponse {
     if !is_dev_env() {
-        return BooleanActorResponse::new(Err(CommonError::Unknown));
+        return BooleanActorResponse::new(Err(CommonError::Unknown {
+            detail: "!is_dev_env()".to_string(),
+        }));
     }
     debug!("load_state: {}", request);
     let caller = &api::caller();
@@ -53,8 +58,11 @@ pub fn load_state(request: LoadStateRequest) -> BooleanActorResponse {
         let bytes = from_state_export_data(request);
         let result = State::decode(bytes);
         if result.is_err() {
-            error!("Failed to decode state: {:?}", result.err());
-            return BooleanActorResponse::Err(ErrorInfo::from(CommonError::Unknown));
+            let err_msg = format!("Failed to decode state: {:?}", result.err());
+            error!("{}", err_msg.to_string());
+            return BooleanActorResponse::Err(ErrorInfo::from(CommonError::Unknown {
+                detail: err_msg,
+            }));
         }
         let new_state = result.unwrap();
         s.replace(new_state);
