@@ -1,14 +1,19 @@
-use ic_cdk::api;
+use candid::Principal;
+
+use crate::constants::*;
+use crate::named_canister_ids::CanisterNames;
+use crate::types::CanisterId;
 
 use super::*;
-use crate::{named_canister_ids::CanisterNames, types::CanisterId};
 
 #[derive(Debug)]
-pub struct DFTApi(CanisterId);
+pub struct DFTApi(pub CanisterId);
 
 impl Default for DFTApi {
     fn default() -> Self {
-        Self(CanisterId(Principal::anonymous()))
+        DFTApi(get_named_canister_id(CanisterNames::DFTCanister(
+            CanisterId(Principal::anonymous()),
+        )))
     }
 }
 
@@ -21,7 +26,7 @@ impl IDFTApi for DFTApi {
         to: String,
         value: Nat,
         nonce: Option<u64>,
-    ) -> ActorResult<TransactionResponse> {
+    ) -> ActorResult<DFTTransactionResponse> {
         call_canister_as_actor_result(
             CanisterNames::DFTCanister(self.0),
             "transferFrom",
@@ -36,7 +41,7 @@ impl IDFTApi for DFTApi {
         to: String,
         value: Nat,
         nonce: Option<u64>,
-    ) -> ActorResult<TransactionResponse> {
+    ) -> ActorResult<DFTTransactionResponse> {
         call_canister_as_actor_result(
             CanisterNames::DFTCanister(self.0),
             "transfer",
@@ -71,7 +76,7 @@ pub struct ICManagementAPI;
 #[cfg_attr(coverage_nightly, no_coverage)]
 #[async_trait]
 impl IICManagementAPI for ICManagementAPI {
-    async fn create_canister(&self, args: CreateCanisterArgs) -> Result<CanisterIdRecord, String> {
+    async fn create_canister(&self, args: CreateCanisterArgs) -> ActorResult<CanisterIdRecord> {
         #[derive(CandidType)]
         struct In {
             settings: Option<CanisterSettings>,
@@ -79,44 +84,14 @@ impl IICManagementAPI for ICManagementAPI {
         let in_arg = In {
             settings: Some(args.settings),
         };
-
-        let (create_result,): (CanisterIdRecord,) = match api::call::call_with_payment(
-            Principal::management_canister(),
-            "create_canister",
-            (in_arg,),
-            args.cycles,
-        )
-        .await
-        {
-            Ok(x) => x,
-            Err((code, msg)) => {
-                return Err(format!(
-                    "An error happened during the call: {}: {}",
-                    code as u8, msg
-                ));
-            }
-        };
-
-        Ok(create_result)
+        call_canister_as_result(CanisterNames::ICManagement, "create_canister", (in_arg,)).await
     }
 
     async fn canister_status(
         &self,
         id_record: CanisterIdRecord,
-    ) -> Result<CanisterStatusResponse, String> {
-        let res: Result<(CanisterStatusResponse,), _> = api::call::call(
-            Principal::management_canister(),
-            "canister_status",
-            (id_record,),
-        )
-        .await;
-        match res {
-            Ok(x) => Ok(x.0),
-            Err((code, msg)) => Err(format!(
-                "An error happened during the call: {}: {}",
-                code as u8, msg
-            )),
-        }
+    ) -> ActorResult<CanisterStatusResponse> {
+        call_canister_as_result(CanisterNames::ICManagement, "canister_status", (id_record,)).await
     }
 
     async fn canister_install(
@@ -124,29 +99,42 @@ impl IICManagementAPI for ICManagementAPI {
         canister_id: &Principal,
         wasm_module: Vec<u8>,
         args: Vec<u8>,
-    ) -> Result<(), String> {
+    ) -> ActorResult<()> {
         let install_config = CanisterInstall {
             mode: InstallMode::Install,
             canister_id: *canister_id,
             wasm_module: wasm_module.clone(),
             arg: args,
         };
-
-        match api::call::call(
-            Principal::management_canister(),
+        call_canister_as_result(
+            CanisterNames::ICManagement,
             "install_code",
             (install_config,),
         )
         .await
-        {
-            Ok(x) => x,
-            Err((code, msg)) => {
-                return Err(format!(
-                    "An error happened during the call: {}: {}",
-                    code as u8, msg
-                ));
-            }
-        };
-        Ok(())
+    }
+
+    async fn ecdsa_public_key(
+        &self,
+        get_public_key_req: ECDSAPublicKey,
+    ) -> ActorResult<ECDSAPublicKeyReply> {
+        call_canister_as_result(
+            CanisterNames::ICManagement,
+            "ecdsa_public_key",
+            (get_public_key_req,),
+        )
+        .await
+    }
+
+    async fn sign_with_ecdsa(
+        &self,
+        sign_request: SignWithECDSA,
+    ) -> ActorResult<SignWithECDSAReply> {
+        call_canister_with_payment_as_result(
+            CanisterNames::ICManagement,
+            "sign_with_ecdsa",
+            (sign_request, ),
+            ECDSA_SIGNATURE_FEE,
+        ).await
     }
 }

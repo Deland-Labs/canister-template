@@ -1,7 +1,7 @@
 use crate::named_canister_ids::{CanisterNames, DEV_NAMED_CANISTER_IDS};
 use candid::Principal;
 use const_env::from_env;
-use log::{debug, info};
+use log::info;
 use once_cell::sync::Lazy;
 use std::str::FromStr;
 
@@ -13,6 +13,12 @@ pub const PAGE_INPUT_MAX_OFFSET: usize = 10_000;
 pub const ENV_DEV: &str = "dev";
 pub const ENV_STAGING: &str = "staging";
 pub const ENV_PRODUCTION: &str = "production";
+
+/// 10B cycles corresponds to 1 SDR cent. Assuming we can create 1 signature per
+/// second, that would come to  26k SDR per month if we spent the whole time
+/// creating signatures. At 13 nodes and 2k SDR per node per month this would
+/// cover the cost of the subnet.
+pub const ECDSA_SIGNATURE_FEE: u64 = 10_000_000_000;
 
 #[from_env]
 const COMMON_CANISTER_IDS_MOCK_SAMPLE_CANISTER: &str = "";
