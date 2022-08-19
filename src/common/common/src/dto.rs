@@ -11,7 +11,7 @@ use flate2::Compression;
 use crate::constants::{
     PAGE_INPUT_MAX_LIMIT, PAGE_INPUT_MAX_OFFSET, PAGE_INPUT_MIN_LIMIT, PAGE_INPUT_MIN_OFFSET,
 };
-use crate::errors::{ErrorInfo, CommonError, ServiceResult};
+use crate::errors::{CommonError, ErrorInfo, ServiceResult};
 
 #[cfg(test)]
 mod tests;
