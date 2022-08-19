@@ -19,7 +19,7 @@ repos:
     #       name: Run Cargo clippy
     #       entry: ./git_hooks/clippy.sh
     #       language: script
-    
+
       -   id: cargo-fix
           name: Run Cargo Fix
           entry: ./git_hooks/fix.sh

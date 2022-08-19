@@ -73,6 +73,12 @@ impl IICLedgerApi for ICLedgerApi {
 #[derive(Default)]
 pub struct ICManagementAPI;
 
+/// 10B cycles corresponds to 1 SDR cent. Assuming we can create 1 signature per
+/// second, that would come to  26k SDR per month if we spent the whole time
+/// creating signatures. At 13 nodes and 2k SDR per node per month this would
+/// cover the cost of the subnet.
+pub const ECDSA_SIGNATURE_FEE: u64 = 10_000_000_000;
+
 #[cfg_attr(coverage_nightly, no_coverage)]
 #[async_trait]
 impl IICManagementAPI for ICManagementAPI {
@@ -133,8 +139,9 @@ impl IICManagementAPI for ICManagementAPI {
         call_canister_with_payment_as_result(
             CanisterNames::ICManagement,
             "sign_with_ecdsa",
-            (sign_request, ),
+            (sign_request,),
             ECDSA_SIGNATURE_FEE,
-        ).await
+        )
+        .await
     }
 }

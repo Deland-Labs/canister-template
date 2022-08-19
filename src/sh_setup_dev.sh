@@ -8,3 +8,7 @@ pip3 install pipenv && \
 pip3 install pre-commit && \
 export PATH=$PATH:$HOME/.local/bin && \
 pre-commit install
+sh ./sh_chmod.sh
+cd ../git_hooks
+sh ./sh_chmod.sh
+cd ..
