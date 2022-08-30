@@ -17,11 +17,14 @@ import { identity, dfxJson, canister } from "@deland-labs/ic-dev-kit";
     const env_name = `COMMON_CANISTER_IDS_${name.toUpperCase()}`;
     const value = canister.get_id(name);
     const config_value = `export ${env_name}=${value}\n`;
-    // replace the whole line which contains the env_name
-    env_canister_ids_content = env_canister_ids_content.replace(
-      new RegExp(`^export ${env_name}.*$`, "gm"),
-      config_value
-    );
+    if (env_canister_ids_content.includes(env_name)) {
+      env_canister_ids_content = env_canister_ids_content.replace(
+        new RegExp(`^export ${env_name}.*$`, "gm"),
+        config_value
+      );
+    } else {
+      env_canister_ids_content += config_value;
+    }
   }
 
   // write env file
