@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import { identity, dfxJson, canister } from "@deland-labs/ic-dev-kit";
+import logger from "node-color-log";
 
 (async () => {
   await canister.createAll();
@@ -18,12 +19,14 @@ import { identity, dfxJson, canister } from "@deland-labs/ic-dev-kit";
     const value = canister.get_id(name);
     const config_value = `export ${env_name}=${value}\n`;
     if (env_canister_ids_content.includes(env_name)) {
+      logger.debug(`update ${config_value}`);
       env_canister_ids_content = env_canister_ids_content.replace(
-        new RegExp(`^export ${env_name}.*$`, "gm"),
+        new RegExp(`^export ${env_name}.*`),
         config_value
       );
     } else {
-      env_canister_ids_content += config_value;
+      logger.debug(`add ${config_value}`);
+      env_canister_ids_content += "\n" + config_value;
     }
   }
 
