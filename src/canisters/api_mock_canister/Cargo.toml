@@ -7,15 +7,15 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-ic-cdk = "0.5.1"
-ic-cdk-macros = "0.5.1"
-candid = "0.7.12"
-serde = "1.0.136"
+ic-cdk = "0.6.4"
+ic-cdk-macros = "0.6.4"
+candid = "0.8.3"
+serde = "1.0.147"
 serde_bytes = "0.11"
 log = "0.4"
 common = { path = "../../common/common"}
 thiserror = "1.0"
-anyhow = "1.0.57"
+anyhow = "1.0.66"
 
 [dev-dependencies]
 test_common = { path = "../../common/test_common" }
