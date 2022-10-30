@@ -30,5 +30,5 @@ env_logger = "0.9.1"
 rstest = "0.15.0"
 
 [build-dependencies]
-anyhow = "1.0.62"
+anyhow = "1.0.66"
 build_common = { path = "../build_common" }
