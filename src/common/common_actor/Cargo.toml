@@ -20,5 +20,5 @@ log = "0.4"
 once_cell = "1.16"
 
 [build-dependencies]
-vergen = { version = "7", default-features = false, features = ["build", "git"] }
+build_common = { path = "../../common/build_common" }
 anyhow = "1.0.66"

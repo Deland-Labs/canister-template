@@ -75,14 +75,12 @@ pub fn load_state(request: LoadStateRequest) -> BooleanActorResponse {
 #[candid_method(query)]
 fn get_wasm_info() -> HashMap<&'static str, &'static str> {
     let mut map = HashMap::new();
-    map.insert("VERGEN_BUILD_TIMESTAMP", env!("VERGEN_BUILD_TIMESTAMP"));
-    map.insert("VERGEN_BUILD_SEMVER", env!("VERGEN_BUILD_SEMVER"));
-    map.insert("VERGEN_GIT_BRANCH", env!("VERGEN_GIT_BRANCH"));
-    map.insert(
-        "VERGEN_GIT_COMMIT_TIMESTAMP",
-        env!("VERGEN_GIT_COMMIT_TIMESTAMP"),
-    );
-    map.insert("VERGEN_GIT_SEMVER", env!("VERGEN_GIT_SEMVER"));
-    map.insert("VERGEN_GIT_SHA", env!("VERGEN_GIT_SHA"));
+    map.insert("BUILD_TIMESTAMP", env!("BUILD_TIMESTAMP"));
+    map.insert("CARGO_PKG_VERSION", env!("CARGO_PKG_VERSION"));
+    map.insert("GIT_BRANCH", env!("GIT_BRANCH"));
+    map.insert("SOURCE_TIMESTAMP", env!("SOURCE_TIMESTAMP"));
+    map.insert("GIT_DIRTY", env!("GIT_DIRTY"));
+    map.insert("GIT_COMMIT", env!("GIT_COMMIT"));
+    map.insert("RUSTC_VERSION", env!("RUSTC_VERSION"));
     map
 }
