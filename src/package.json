@@ -27,7 +27,7 @@
     "node-color-log": "^10.0.0",
     "node-fetch": "^2.6.7",
     "protobufjs": "^6.11.2",
-    "secp256k1": "^4.0.2",
+    "secp256k1": "^5.0.0",
     "sha256": "^0.2.0",
     "shelljs": "^0.8.4",
     "supports-color": "^9.2.1",
