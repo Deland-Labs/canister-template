@@ -1,12 +1,17 @@
 use anyhow::{Ok, Result};
 use env_file_reader::read_file;
-use vergen::{vergen, Config};
 
 pub fn generate_envs() -> Result<()> {
     // Generate the default 'cargo:' instruction output
 
     // generate git info
-    // vergen(Config::default())?;
+    build_data::set_BUILD_TIMESTAMP();
+    build_data::set_GIT_BRANCH();
+    build_data::set_GIT_COMMIT();
+    build_data::set_GIT_DIRTY();
+    build_data::set_SOURCE_TIMESTAMP();
+    build_data::no_debug_rebuilds();
+    build_data::set_RUSTC_VERSION();
     //
     // println!("rerun-if-env-changed=COMMON_CANISTER_ENV");
     // let env = if let Some(env) = option_env!("COMMON_CANISTER_ENV") {
